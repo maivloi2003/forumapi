@@ -36,7 +36,6 @@ D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\dto\requests\user\U
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\repository\LikesRepository.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\controller\MailController.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\dto\responses\post\PostContentResponse.java
-D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\service\ICacheService.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\mapper\UserMapper.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\dto\responses\like\LikeResponse.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\controller\FriendRequestController.java

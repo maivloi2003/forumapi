@@ -6,7 +6,6 @@ com\project\forum\dto\responses\post\PostPollResponse$PostPollResponseBuilder.cl
 com\project\forum\mapper\PostContentMapperImpl.class
 com\project\forum\service\implement\VoteService.class
 com\project\forum\controller\CommentReplyController.class
-com\project\forum\service\ICacheService.class
 com\project\forum\repository\PollOptionsRepository.class
 com\project\forum\service\IUserService.class
 com\project\forum\enums\ErrorCode.class
