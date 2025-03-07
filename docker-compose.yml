@@ -10,9 +10,10 @@ services:
     depends_on:
       - redis
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://switchyard.proxy.rl:3306/railway
+      - SPRING_DATASOURCE_URL=jdbc:mysql://switchyard.proxy.rlwy.net:21349/railway
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=uvpofOvasFblInHEynOsPGqanAXMhodT
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQLDialect
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
 
