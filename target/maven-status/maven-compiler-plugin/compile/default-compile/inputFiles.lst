@@ -41,7 +41,6 @@ D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\mapper\UserMapper.j
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\dto\responses\like\LikeResponse.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\controller\FriendRequestController.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\enity\Language.java
-D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\service\implement\CacheService.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\service\implement\AuthService.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\exception\GlobalExceptionHandler.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\service\INoticeService.java
