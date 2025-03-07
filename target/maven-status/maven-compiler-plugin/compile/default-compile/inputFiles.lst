@@ -53,7 +53,6 @@ D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\dto\responses\auth\
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\configuration\SecurityConfig.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\service\ILikeService.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\configuration\JwtAuthEntryPoint.java
-D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\configuration\RedisConfig.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\repository\AdvertisementRepository.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\controller\CommentController.java
 D:\dev-spring-boot\Forum-Api\src\main\java\com\project\forum\controller\PostContentController.java
