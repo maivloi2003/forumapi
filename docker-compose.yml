@@ -10,7 +10,7 @@ services:
     depends_on:
       - redis
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://switchyard.proxy.rlwy.net:21349/railway?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://switchyard.proxy.rl:3306/railway
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=uvpofOvasFblInHEynOsPGqanAXMhodT
       - SPRING_REDIS_HOST=redis
