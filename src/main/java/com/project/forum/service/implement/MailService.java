@@ -13,7 +13,6 @@ import com.project.forum.enums.StatusUser;
 import com.project.forum.exception.WebException;
 import com.project.forum.repository.UsersRepository;
 import com.project.forum.service.IAuthService;
-import com.project.forum.service.ICacheService;
 import com.project.forum.service.IMailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +41,6 @@ public class MailService implements IMailService {
 
     final PasswordEncoder passwordEncoder;
 
-    final ICacheService iCacheService;
 
     final IAuthService iAuthService;
 
@@ -69,10 +67,6 @@ public class MailService implements IMailService {
                 "Link is only valid for 5 minutes \n" +
                 mail_url + "/confirmEmail?token=" + token);
 
-        if (iCacheService.existData("user:" + users.getUsername() + "mail_active")) {
-            iCacheService.deleteData("user:" + users.getUsername() + "mail_active");
-        }
-        iCacheService.saveDataWithTime("user:" + users.getUsername() + "mail_active", token, 3600L);
         javaMailSender.send(simpleMailMessage);
 
         return MailResponse.builder()
@@ -126,10 +120,6 @@ public class MailService implements IMailService {
         simpleMailMessage.setText("Please click on the following link to verify your email.\n" +
                 "Link is only valid for 5 minutes \n" +
                 mail_url + "/resetPassword?token=" + token);
-        if (iCacheService.existData("user:" + users.getUsername() + "mail_password")) {
-            iCacheService.deleteData("user:" + users.getUsername() + "mail_password");
-        }
-        iCacheService.saveDataWithTime("user:" + users.getUsername() + "mail_password", token, 3600L);
         javaMailSender.send(simpleMailMessage);
 
         return MailResponse.builder()
