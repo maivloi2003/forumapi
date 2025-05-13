@@ -1,4 +1,4 @@
-SECRET_KEY: "VIEBE6HX0OPC6HX0VGAUDINUPRBEOPC6HX0VGGHAAOAKG"
+SECRET_KEY: {SECRET_KEY}
 
 
 springdoc:
@@ -30,7 +30,7 @@ app:
     max-size: 5242880
 
 AI:
-  key: "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"
+  key: {AI_KEY}
   url: "https://api.openai.com/v1/chat/completions"
 
 VnPay:
