@@ -1,5 +1,6 @@
 package com.project.forum.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.forum.dto.requests.comment.CreateCommentDto;
 import com.project.forum.dto.requests.comment.CreateCommentReplyDto;
 import com.project.forum.dto.responses.comment.CommentResponse;
@@ -22,7 +23,7 @@ public class CommentReplyController {
 
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping()
-    ResponseEntity<ApiResponse<CommentResponse>> create(@RequestBody() CreateCommentReplyDto createCommentReplyDto) {
+    ResponseEntity<ApiResponse<CommentResponse>> create(@RequestBody() CreateCommentReplyDto createCommentReplyDto) throws JsonProcessingException {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<CommentResponse>builder()
                 .data(commentReplyService.create(createCommentReplyDto))
                 .build());
@@ -32,9 +33,9 @@ public class CommentReplyController {
     @GetMapping
     ResponseEntity<ApiResponse<Page<CommentResponse>>> getAll(@RequestParam(defaultValue = "0") Integer page,
                                                               @RequestParam(defaultValue = "10") Integer size,
-                                                              @RequestParam("postId") String postId) {
+                                                              @RequestParam(defaultValue = "") String commentId) {
         return ResponseEntity.ok(ApiResponse.<Page<CommentResponse>>builder()
-                .data(commentReplyService.findCommentReplyByCommentId(size, page, postId))
+                .data(commentReplyService.findCommentReplyByCommentId(size, page, commentId))
                 .build());
     }
 

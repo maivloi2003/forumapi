@@ -1,5 +1,6 @@
 package com.project.forum.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.forum.dto.requests.comment.CreateCommentDto;
 import com.project.forum.dto.responses.comment.CommentResponse;
 import com.project.forum.exception.ApiResponse;
@@ -24,7 +25,7 @@ public class CommentController {
 
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping()
-    ResponseEntity<ApiResponse<CommentResponse>> create(@RequestBody() CreateCommentDto createCommentDto) {
+    ResponseEntity<ApiResponse<CommentResponse>> create(@RequestBody() CreateCommentDto createCommentDto) throws JsonProcessingException {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<CommentResponse>builder()
                 .data(commentService.create(createCommentDto))
                 .build());

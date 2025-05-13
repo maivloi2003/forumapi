@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,12 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "poll_options")
+@Entity
+@Table(name = "poll_options", indexes = {
+        @Index(name = "idx_poll_options_created_at", columnList = "created_at"),
+        @Index(name = "idx_poll_options_poll_id", columnList = "poll_id")
+})
+@EntityListeners(AuditingEntityListener.class)
 public class PollOptions {
 
     @Id

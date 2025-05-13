@@ -1,5 +1,4 @@
 version: '3.7'
-
 services:
   app:
     image: openjdk:11
@@ -8,14 +7,23 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
+      - db
       - redis
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://switchyard.proxy.rlwy.net:21349/railway
+      - SPRING_DATASOURCE_URL=mysql://root:RMxQwJLgbGQpWqBxIhSiAhzrpJYczAqd@nozomi.proxy.rlwy.net:42692/railway
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=uvpofOvasFblInHEynOsPGqanAXMhodT
-      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQLDialect
+      - SPRING_DATASOURCE_PASSWORD=RMxQwJLgbGQpWqBxIhSiAhzrpJYczAqd
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=forum_language
+    ports:
+      - "3306:3306"
 
   redis:
     image: redis:latest

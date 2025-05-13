@@ -14,9 +14,11 @@ public interface IUserService {
 
         UserResponse update(UpdateUserDto updateUserDto);
 
-        Page<UserResponse> getAllUsers(Integer page, Integer size);
+        Page<UserResponse> getAllUsers(String username,Integer page, Integer size);
 
         UserResponse getUserById(String id);
 
         UserResponse getMyInfo();
+
+        Page<UserResponse> getUserByName(String name, Integer page, Integer size);
 }

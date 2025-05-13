@@ -13,6 +13,7 @@ import com.project.forum.enums.StatusUser;
 import com.project.forum.exception.WebException;
 import com.project.forum.repository.UsersRepository;
 import com.project.forum.service.IAuthService;
+import com.project.forum.service.ICacheService;
 import com.project.forum.service.IMailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +42,14 @@ public class MailService implements IMailService {
 
     final PasswordEncoder passwordEncoder;
 
+    final ICacheService iCacheService;
 
     final IAuthService iAuthService;
 
     @Value("${SECRET_KEY}")
     String secret_key;
 
-    @Value("https://forumlanguages-2fbac.web.app")
+    @Value("http://localhost:1407")
     String mail_url;
 
     @Override
@@ -55,7 +57,7 @@ public class MailService implements IMailService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        if (users.getStatus().equals(StatusUser.ACTIVE)) {
+        if (users.getStatus().equals(StatusUser.ACTIVE.toString())) {
             throw new WebException(ErrorCode.E_USER_IS_ACTIVE);
         }
         String token = generateTokenActive(users);
@@ -67,6 +69,10 @@ public class MailService implements IMailService {
                 "Link is only valid for 5 minutes \n" +
                 mail_url + "/confirmEmail?token=" + token);
 
+        if (iCacheService.existData("user:" + users.getUsername() + "mail_active")) {
+            iCacheService.deleteData("user:" + users.getUsername() + "mail_active");
+        }
+        iCacheService.saveDataWithTime("user:" + users.getUsername() + "mail_active", token, 3600L);
         javaMailSender.send(simpleMailMessage);
 
         return MailResponse.builder()
@@ -90,8 +96,11 @@ public class MailService implements IMailService {
                 }
                 Users users = usersRepository.findByUsername(username)
                         .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-                if (users.getStatus().equals(StatusUser.ACTIVE)) {
+                if (users.getStatus().equals(StatusUser.ACTIVE.toString())) {
                     throw new WebException(ErrorCode.E_USER_IS_ACTIVE);
+                }
+                if (users.getStatus().equals(StatusUser.LOCKED.toString())) {
+                    throw new WebException(ErrorCode.E_USER_IS_LOCKED);
                 }
                 users.setStatus(StatusUser.ACTIVE.toString());
                 usersRepository.save(users);
@@ -120,6 +129,10 @@ public class MailService implements IMailService {
         simpleMailMessage.setText("Please click on the following link to verify your email.\n" +
                 "Link is only valid for 5 minutes \n" +
                 mail_url + "/resetPassword?token=" + token);
+        if (iCacheService.existData("user:" + users.getUsername() + "mail_password")) {
+            iCacheService.deleteData("user:" + users.getUsername() + "mail_password");
+        }
+        iCacheService.saveDataWithTime("user:" + users.getUsername() + "mail_password", token, 3600L);
         javaMailSender.send(simpleMailMessage);
 
         return MailResponse.builder()

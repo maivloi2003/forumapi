@@ -1,8 +1,11 @@
 package com.project.forum.dto.responses.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.project.forum.enity.Roles;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -25,5 +28,9 @@ public class UserResponse {
     String email;
 
     String username;
+
+    String roles;
+
+    String active;
 
 }

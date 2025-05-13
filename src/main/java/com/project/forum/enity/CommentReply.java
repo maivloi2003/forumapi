@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +18,13 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "comment_reply")
+@Entity
+@Table(name = "comment_reply", indexes = {
+        @Index(name = "idx_comment_reply_created_at", columnList = "created_at"),
+        @Index(name = "idx_comment_reply_user_id", columnList = "user_id"),
+        @Index(name = "idx_comment_reply_comment_id", columnList = "comment_id")
+})
+@EntityListeners(AuditingEntityListener.class)
 public class CommentReply {
 
     @Id

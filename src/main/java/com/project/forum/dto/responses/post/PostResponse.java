@@ -23,7 +23,7 @@ public class PostResponse {
 
     LocalDateTime updated_at;
 
-    String user_name;
+    String full_name;
 
     String user_avatar;
 
@@ -38,6 +38,12 @@ public class PostResponse {
     Long like;
 
     Long comment;
+
+    boolean isShow;
+
+    boolean isAds;
+
+    boolean isDeleted;
 
 
 }

@@ -1,5 +1,6 @@
 package com.project.forum.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.forum.dto.requests.like.CreateLikeDto;
 import com.project.forum.dto.responses.like.LikeResponse;
 import com.project.forum.exception.ApiResponse;
@@ -24,7 +25,7 @@ public class LikeController {
 
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping("/action")
-    ResponseEntity<ApiResponse<LikeResponse>> actionLike(@RequestBody() CreateLikeDto createLikeDto) {
+    ResponseEntity<ApiResponse<LikeResponse>> actionLike(@RequestBody() CreateLikeDto createLikeDto) throws JsonProcessingException {
         return ResponseEntity.ok(ApiResponse.<LikeResponse>builder()
                 .data(likeService.actionLike(createLikeDto))
                 .build());

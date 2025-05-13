@@ -1,14 +1,15 @@
 package com.project.forum.service.implement;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.forum.dto.requests.comment.CreateCommentDto;
 import com.project.forum.dto.responses.comment.CommentResponse;
 import com.project.forum.enity.Comments;
-import com.project.forum.enity.Notices;
 import com.project.forum.enity.Posts;
 import com.project.forum.enity.Users;
 import com.project.forum.enums.ErrorCode;
 import com.project.forum.enums.RolesCode;
 import com.project.forum.enums.TypeNotice;
+import com.project.forum.enums.TypePost;
 import com.project.forum.exception.WebException;
 import com.project.forum.mapper.CommentMapper;
 import com.project.forum.repository.CommentsRepository;
@@ -27,7 +28,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -47,7 +47,7 @@ public class CommentService implements ICommentService {
     CommentMapper commentMapper;
 
     @Override
-    public CommentResponse create(CreateCommentDto createCommentDto) {
+    public CommentResponse create(CreateCommentDto createCommentDto) throws JsonProcessingException {
 
         String message = "";
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -55,7 +55,17 @@ public class CommentService implements ICommentService {
         Posts posts = postsRepository.findById(createCommentDto.getPostId()).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
 
         int count = noticesRepository.countNoticesByTypeAndPost_id(TypeNotice.COMMENT.toString(), posts.getId());
-        if (Objects.isNull(posts.getPostPoll())) {
+        if (count == 0) {
+            if (posts.getType_post().equals(TypePost.CONTENT.toString())) {
+                String title = posts.getPostContent().getTitle();
+                String safeTitle = title.substring(0, Math.min(title.length(), 12));
+                message = users.getName() + " comment your post " + safeTitle;
+            } else {
+                String question = posts.getPostPoll().getQuestion();
+                String safeTitle = question.substring(0, Math.min(question.length(), 12));
+                message = users.getName() + " comment your post " + safeTitle;
+            }
+        } else if (posts.getType_post().equals(TypePost.CONTENT.toString())) {
             String title = posts.getPostContent().getTitle();
             String safeTitle = title.substring(0, Math.min(title.length(), 12));
             message += users.getName() + " and " + count + " other people comment your post " + safeTitle + " ...";
@@ -73,7 +83,7 @@ public class CommentService implements ICommentService {
                 .created_at(LocalDateTime.now())
                 .build();
 
-        noticeService.sendNotification(users, TypeNotice.COMMENT.toString(), posts.getId(), message);
+        noticeService.sendNotification(posts.getUsers(), TypeNotice.COMMENT.toString(), message, posts.getId(),null);
 
         commentsRepository.save(comments);
         CommentResponse commentResponse = commentMapper.toCommentResponse(comments);
@@ -84,10 +94,10 @@ public class CommentService implements ICommentService {
 
     @Override
     public Page<CommentResponse> findCommentByPost(Integer size, Integer page, String postId) {
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page, size);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (username.equals("anonymousUser")) {
-            return commentsRepository.findCommentByPostIdAndUserId(postId, null,pageable);
+            return commentsRepository.findCommentByPostIdAndUserId(postId, null, pageable);
         }
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));

@@ -24,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -62,7 +64,7 @@ public class UserService implements IUserService {
     @Override
     public UserResponse setStatus(String id, StatusUser statusUser) {
         Users users = usersRepository.findById(id).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        users.setStatus(statusUser.getActive());
+        users.setStatus(statusUser.toString());
         usersRepository.save(users);
         return userMapper.toUserResponse(users);
     }
@@ -71,15 +73,16 @@ public class UserService implements IUserService {
     public UserResponse update(UpdateUserDto updateUserDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+
         userMapper.toUpdate(users,updateUserDto);
 
         return userMapper.toUserResponse(usersRepository.save(users));
     }
 
     @Override
-    public Page<UserResponse> getAllUsers(Integer page, Integer size) {
+    public Page<UserResponse> getAllUsers(String username,Integer page, Integer size) {
         Pageable pageable =  PageRequest.of(page,size);
-        Page<UserResponse> userResponsePage = usersRepository.getAllUsers(pageable);
+        Page<UserResponse> userResponsePage = usersRepository.getAllUsers(username,pageable);
         return userResponsePage;
     }
 
@@ -93,9 +96,29 @@ public class UserService implements IUserService {
     public UserResponse getMyInfo() {
         Users users = usersRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        return userMapper.toUserResponse(users);
+        UserResponse userResponse = userMapper.toUserResponse(users);
+        Set<String> roleNames = users.getRoles()
+                .stream()
+                .map(Roles::getName)
+                .collect(Collectors.toSet());
+        userResponse.setRoles(roleNames.toString());
+        return userResponse;
     }
 
-    
+    @Override
+    public Page<UserResponse> getUserByName(String name, Integer page, Integer size) {
+//        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND) );
+//        UserResponse userResponse = usersRepository.findUserByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        Pageable pageable =  PageRequest.of(page,size);
+        Page<UserResponse> userResponseList = usersRepository.findUserByName(name, pageable);
+//        UserResponse userResponse = userMapper.toUserResponse(users);
+//        Set<String> roleNames = users.getRoles()
+//                .stream()
+//                .map(Roles::getName)
+//                .collect(Collectors.toSet());
+//        userResponse.setRoles(roleNames.toString());
+        return userResponseList;
+    }
+
 
 }

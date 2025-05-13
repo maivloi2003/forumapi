@@ -29,5 +29,12 @@ app:
     allowed-types: image/jpeg,image/png,image/jpg
     max-size: 5242880
 
+AI:
+  key: "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"
+  url: "https://api.openai.com/v1/chat/completions"
 
-
+VnPay:
+  PayUrl: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+  ReturnUrl: "/vnpay-payment-return"
+  TmnCode: "WZWKQBWX"
+  HashSecret: "BKL2QUYRBNTY1MQY7XE2MTGT0KARJHT2"

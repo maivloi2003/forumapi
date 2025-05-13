@@ -1,5 +1,6 @@
 package com.project.forum.controller;
 
+import com.project.forum.dto.requests.post.PostShowRequest;
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.exception.ApiResponse;
 import com.project.forum.service.IPostService;
@@ -59,6 +60,7 @@ public class PostController {
                 .data(postService.findPostByIdUser(id,page, size))
                 .build());
     }
+
     @SecurityRequirement(name = "BearerAuth")
     @DeleteMapping("/{id}")
     ResponseEntity<ApiResponse<Boolean>> delete(@PathVariable String id) {
@@ -67,5 +69,31 @@ public class PostController {
                 .build());
     }
 
+    @SecurityRequirement(name = "BearerAuth")
+    @GetMapping("/find")
+    ResponseEntity<ApiResponse<Page<PostResponse>>> findAllAdmin(@RequestParam(defaultValue = "0") Integer page,
+                                                            @RequestParam(defaultValue = "10") Integer size,
+                                                            @RequestParam(defaultValue = "") String language,
+                                                            @RequestParam(defaultValue = "") String content) {
+        return ResponseEntity.ok(ApiResponse.<Page<PostResponse>>builder()
+                .data(postService.findAllPostAdmin(page, size, content, language))
+                .build());
+    }
+
+    @SecurityRequirement(name = "BearerAuth")
+    @PatchMapping("/{id}/status")
+    ResponseEntity<ApiResponse<PostResponse>> setStatus(@PathVariable String id, @RequestBody PostShowRequest postShowRequest) {
+        return ResponseEntity.ok(ApiResponse.<PostResponse>builder()
+                .data(postService.showPostById(id,postShowRequest))
+                .build());
+    }
+
+    @SecurityRequirement(name = "BearerAuth")
+    @PatchMapping("/{id}/Show")
+    ResponseEntity<ApiResponse<PostResponse>> setShow(@PathVariable String id, @RequestBody PostShowRequest postShowRequest) {
+        return ResponseEntity.ok(ApiResponse.<PostResponse>builder()
+                .data(postService.changeStatusPost(id,postShowRequest))
+                .build());
+    }
 
 }

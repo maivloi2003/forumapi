@@ -14,6 +14,7 @@ import com.project.forum.enums.StatusUser;
 import com.project.forum.exception.WebException;
 import com.project.forum.repository.UsersRepository;
 import com.project.forum.service.IAuthService;
+import com.project.forum.service.ICacheService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +37,11 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthService implements IAuthService {
 
-
     final UsersRepository usersRepository;
 
     final PasswordEncoder passwordEncoder;
 
+    final ICacheService iCacheService;
     @Value("${SECRET_KEY}")
     String secret_key;
 
@@ -53,6 +54,14 @@ public class AuthService implements IAuthService {
             throw new WebException(ErrorCode.E_WRONG_PASSWORD);
         }
         String token = generateToken(user);
+        if (user.getStatus().equals(StatusUser.LOCKED.toString())){
+            throw new WebException(ErrorCode.E_USER_IS_LOCKED);
+        }
+        if (iCacheService.getData("user:" + user.getUsername() + "token") != null) {
+            iCacheService.deleteData("user:" + user.getUsername() + "token");
+        }
+        iCacheService.saveDataWithTime("user:" + user.getUsername() + "token", token, 3600000L);
+
         return AuthResponse.builder()
                 .token(token)
                 .authorized(check)
@@ -76,6 +85,7 @@ public class AuthService implements IAuthService {
     public AuthResponse logout(String token) {
         try {
             SignedJWT signedJWT = verify(token);
+            iCacheService.saveDataWithTime("expired_token", token,3600000L);
             return AuthResponse.builder()
                     .authorized(true)
                     .build();
@@ -94,6 +104,7 @@ public class AuthService implements IAuthService {
             String username = signedJWT.getJWTClaimsSet().getSubject();
             Users users = usersRepository.findByUsername(username)
                     .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+            iCacheService.saveDataWithTime("expired_token", refreshToken, 3600000L);
             String token = generateToken(users);
             return AuthResponse.builder()
                     .authorized(true)
@@ -119,6 +130,11 @@ public class AuthService implements IAuthService {
                         .authorized(true)
                         .token(token)
                         .build();
+            } else if (users.getStatus().equals(StatusUser.LOCKED.toString())){
+                return AuthResponse.builder()
+                        .authorized(false)
+                        .token(token)
+                        .build();
             } else {
                 return AuthResponse.builder()
                         .authorized(false)
@@ -139,7 +155,7 @@ public class AuthService implements IAuthService {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
-        return null;
+        return request.getParameter("token");
     }
 
     @Override
@@ -165,7 +181,11 @@ public class AuthService implements IAuthService {
         var verify = signedJWT.verify(verifier);
         if (!(verify || expiration.before(new Date())))
             throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
-
+       if (iCacheService.getData("expired_token") != null) {
+           if (iCacheService.getData("expired_token").equals(token)) {
+               throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
+           }
+       }
         return signedJWT;
     }
 

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/notices")
-@Tag(name = "11. Notices")
+@Tag(name = "17. Notices")
 public class NoticeController {
 
     INoticeService noticeService;

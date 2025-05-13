@@ -5,6 +5,7 @@ import com.project.forum.enums.TypePoll;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.List;
 
@@ -16,7 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "post_poll")
+@Entity
+@Table(name = "post_poll", indexes = {
+        @Index(name = "idx_post_poll_post_id", columnList = "post_id")
+})
+@EntityListeners(AuditingEntityListener.class)
 public class PostPoll {
 
     @Id

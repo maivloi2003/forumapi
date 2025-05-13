@@ -2,13 +2,13 @@ package com.project.forum.enity;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.project.forum.enums.StatusUser;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.HashSet;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +20,14 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "users")
+@Entity
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_username", columnList = "username"),
+        @Index(name = "idx_users_status", columnList = "status"),
+        @Index(name = "idx_users_name", columnList = "name"),
+        @Index(name = "idx_users_id", columnList = "id")
+})
+@EntityListeners(AuditingEntityListener.class)
 public class Users {
 
     @Id
@@ -42,6 +49,10 @@ public class Users {
     String password;
 
     String status;
+
+    @CreatedDate
+    @Column(updatable = false)
+    LocalDateTime created;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST )
     Set<Roles> roles;
@@ -65,7 +76,7 @@ public class Users {
     List<PollVote> PollVotes;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Payment> payments;
+    List<Transaction> transactions;
 
     @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Conversations> conversations;
@@ -74,8 +85,8 @@ public class Users {
     List<Messages> messages;
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    List<FriendRequest> sentFriendRequests;
+    List<FriendShip> sentFriendShips;
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-    List<FriendRequest> receivedFriendRequests;
+    List<FriendShip> receivedFriendShips;
 }

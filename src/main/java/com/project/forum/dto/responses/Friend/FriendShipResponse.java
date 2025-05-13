@@ -1,4 +1,4 @@
-package com.project.forum.dto.responses.Friend;
+package com.project.forum.dto.responses.friend;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

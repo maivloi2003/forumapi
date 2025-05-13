@@ -14,7 +14,11 @@ public interface PostContentRepository extends JpaRepository<PostContent, String
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostContentResponse( " +
             "pc.id, pc.title, pc.content, pc.img_url,pc.posts.id) " +
-            "FROM post_content pc " +
+            "FROM PostContent pc " +
             "WHERE pc.posts.id = :postId")
-    Optional<PostContentResponse> findPostContentByPosts_Id(@Param("postId") String postId);
+    Optional<PostContentResponse> findByPosts_Id(@Param("postId") String postId);
+
+    Optional<PostContent> findPostContentsByPosts_Id(@Param("postId") String postId);
+
+//    PostContent updatePostContentByPosts_Id(@Param("postId") String id, @Param("title") String title, @Param("content") String content);
 }

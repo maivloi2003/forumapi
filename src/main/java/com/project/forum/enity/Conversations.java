@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +18,11 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "conversations")
+@Entity
+@Table(name = "conversations", indexes = {
+        @Index(name = "idx_conversations_created_at", columnList = "created_at")
+})
+@EntityListeners(AuditingEntityListener.class)
 public class Conversations {
 
     @Id

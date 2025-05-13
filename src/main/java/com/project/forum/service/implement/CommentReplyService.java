@@ -1,5 +1,6 @@
 package com.project.forum.service.implement;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.forum.dto.requests.comment.CreateCommentReplyDto;
 import com.project.forum.dto.responses.comment.CommentResponse;
 import com.project.forum.enity.CommentReply;
@@ -42,7 +43,7 @@ public class CommentReplyService implements ICommentReplyService {
     INoticeService noticeService;
 
     @Override
-    public CommentResponse create(CreateCommentReplyDto createCommentReplyDto) {
+    public CommentResponse create(CreateCommentReplyDto createCommentReplyDto) throws JsonProcessingException {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
@@ -62,12 +63,7 @@ public class CommentReplyService implements ICommentReplyService {
 
         String message = users.getName() + " replied to your comment: " +
                 createCommentReplyDto.getContent().substring(0, Math.min(createCommentReplyDto.getContent().length(), 12)) + " ...";
-
-
-
-        noticeService.sendNotification(users, TypeNotice.COMMENT_REPLY.toString(), parentComment.getId(), message);
-
-
+        noticeService.sendNotification(commentReply.getUsers(), TypeNotice.COMMENT_REPLY.toString(),message, parentComment.getPosts().getId(),null);
         return CommentResponse.builder()
                 .id(commentReply.getId())
                 .is_user(true)
