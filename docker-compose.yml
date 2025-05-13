@@ -10,7 +10,7 @@ services:
       - db
       - redis
     environment:
-      - SPRING_DATASOURCE_URL=mysql://root:RMxQwJLgbGQpWqBxIhSiAhzrpJYczAqd@nozomi.proxy.rlwy.net:42692/railway
+      - SPRING_DATASOURCE_URL=mysql://root:RMxQwJLgbGQpWqBxIhSiAhzrpJYczAqd@mysql.railway.internal:3306/railway
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=RMxQwJLgbGQpWqBxIhSiAhzrpJYczAqd
       - SPRING_REDIS_HOST=redis
