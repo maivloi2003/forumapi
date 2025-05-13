@@ -1,4 +1,4 @@
-SECRET_KEY: {SECRET_KEY}
+SECRET_KEY: ${SECRET_KEY}
 
 
 springdoc:
@@ -30,7 +30,7 @@ app:
     max-size: 5242880
 
 AI:
-  key: {AI_KEY}
+  key: ${AI_KEY}
   url: "https://api.openai.com/v1/chat/completions"
 
 VnPay:
